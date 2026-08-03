@@ -1,16 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TaskList } from './task-list';
-import { TaskService, TaskItem } from '../../services/task';
+import { TaskService } from '../../services/task';
+import { TaskItem } from '../../models/task-model';
 import { of, throwError } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { vi } from 'vitest';
 
 describe('TaskList', () => {
   let component: TaskList;
   let fixture: ComponentFixture<TaskList>;
-  let taskServiceSpy: jasmine.SpyObj<TaskService>;
+  let taskServiceSpy: { getTasks: ReturnType<typeof vi.fn> };
 
   beforeEach(async () => {
-    const spy = jasmine.createSpyObj('TaskService', ['getTasks']);
+    const spy = {
+      getTasks: vi.fn()
+    };
 
     await TestBed.configureTestingModule({
       imports: [TaskList, CommonModule],
@@ -19,11 +23,11 @@ describe('TaskList', () => {
       ]
     }).compileComponents();
 
-    taskServiceSpy = TestBed.inject(TaskService) as jasmine.SpyObj<TaskService>;
+    taskServiceSpy = TestBed.inject(TaskService) as unknown as { getTasks: ReturnType<typeof vi.fn> };
   });
 
   it('should create', async () => {
-    taskServiceSpy.getTasks.and.returnValue(of([]));
+    taskServiceSpy.getTasks.mockReturnValue(of([]));
     
     fixture = TestBed.createComponent(TaskList);
     component = fixture.componentInstance;
@@ -37,7 +41,7 @@ describe('TaskList', () => {
       { id: '1', title: 'Task Test 1', status: 0 },
       { id: '2', title: 'Task Test 2', status: 1 }
     ];
-    taskServiceSpy.getTasks.and.returnValue(of(mockTasks));
+    taskServiceSpy.getTasks.mockReturnValue(of(mockTasks));
 
     fixture = TestBed.createComponent(TaskList);
     component = fixture.componentInstance;
@@ -49,7 +53,7 @@ describe('TaskList', () => {
   });
 
   it('should handle error when loading tasks fails', async () => {
-    taskServiceSpy.getTasks.and.returnValue(throwError(() => new Error('API Error')));
+    taskServiceSpy.getTasks.mockReturnValue(throwError(() => new Error('API Error')));
 
     fixture = TestBed.createComponent(TaskList);
     component = fixture.componentInstance;
