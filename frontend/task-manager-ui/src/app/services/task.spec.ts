@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
-import { TaskItem } from '../models/task-model';
 import { TaskService } from './task';
+import { TaskItem } from '../models/task-model';
 
 describe('TaskService', () => {
   let service: TaskService;
@@ -42,5 +42,19 @@ describe('TaskService', () => {
     const req = httpMock.expectOne('http://localhost:5098/api/tasks');
     expect(req.request.method).toBe('GET');
     req.flush(mockTasks);
+  });
+
+  it('should create a new task via POST', () => {
+    const newTask: TaskItem = { title: 'New Task Test', description: 'Description Test' };
+    const createdTask: TaskItem = { id: '3-guid', title: 'New Task Test', description: 'Description Test', status: 0 };
+
+    service.createTask(newTask).subscribe(task => {
+      expect(task).toEqual(createdTask);
+    });
+
+    const req = httpMock.expectOne('http://localhost:5098/api/tasks');
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(newTask);
+    req.flush(createdTask);
   });
 });

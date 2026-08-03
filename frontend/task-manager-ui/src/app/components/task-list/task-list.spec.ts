@@ -9,11 +9,12 @@ import { vi } from 'vitest';
 describe('TaskList', () => {
   let component: TaskList;
   let fixture: ComponentFixture<TaskList>;
-  let taskServiceSpy: { getTasks: ReturnType<typeof vi.fn> };
+  let taskServiceSpy: { getTasks: ReturnType<typeof vi.fn>; createTask: ReturnType<typeof vi.fn> };
 
   beforeEach(async () => {
     const spy = {
-      getTasks: vi.fn()
+      getTasks: vi.fn(),
+      createTask: vi.fn()
     };
 
     await TestBed.configureTestingModule({
@@ -23,7 +24,7 @@ describe('TaskList', () => {
       ]
     }).compileComponents();
 
-    taskServiceSpy = TestBed.inject(TaskService) as unknown as { getTasks: ReturnType<typeof vi.fn> };
+    taskServiceSpy = TestBed.inject(TaskService) as unknown as { getTasks: ReturnType<typeof vi.fn>; createTask: ReturnType<typeof vi.fn> };
   });
 
   it('should create', async () => {
@@ -60,5 +61,25 @@ describe('TaskList', () => {
     await fixture.whenStable();
 
     expect(component.errorMessage).toBe('Error loading tasks from API.');
+  });
+
+  it('should add a new task successfully', async () => {
+    taskServiceSpy.getTasks.mockReturnValue(of([]));
+    const newTask: TaskItem = { title: 'Brand New Task' };
+    const savedTask: TaskItem = { id: 'guid-123', title: 'Brand New Task', status: 0 };
+    
+    taskServiceSpy.createTask.mockReturnValue(of(savedTask));
+
+    fixture = TestBed.createComponent(TaskList);
+    component = fixture.componentInstance;
+    await fixture.whenStable();
+
+    component.newTaskTitle = 'Brand New Task';
+    component.addTask();
+
+    expect(taskServiceSpy.createTask).toHaveBeenCalledWith({ title: 'Brand New Task' });
+    expect(component.tasks.length).toBe(1);
+    expect(component.tasks[0].title).toBe('Brand New Task');
+    expect(component.newTaskTitle).toBe('');
   });
 });
