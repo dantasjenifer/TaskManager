@@ -52,9 +52,9 @@ namespace TaskManager.Api.Services
             return (true, false, string.Empty);
         }
 
-        public async Task<bool> DeleteTaskAsync(Guid Id)
+        public async Task<bool> DeleteTaskAsync(Guid id)
         {
-            var task = await _taskContext.Tasks.FindAsync(Id);
+            var task = await _taskContext.Tasks.FirstOrDefaultAsync(t => t.Id == id);
 
             if (task == null)
             {
@@ -65,6 +65,6 @@ namespace TaskManager.Api.Services
             await _taskContext.SaveChangesAsync();
 
             return true;
-        }
+}
     }
 }
