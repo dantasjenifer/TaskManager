@@ -34,8 +34,7 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins(
                 "http://localhost:4200",
-                "https://task-manager-ui.onrender.com",
-                "https://task-manager-ui.vercel.app")
+                "https://taskmanager-frontend-uani.onrender.com")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
