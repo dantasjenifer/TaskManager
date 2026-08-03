@@ -1,1 +1,35 @@
-<p>task-list works!</p>
+<div>
+    <h2>Task Manager</h2>
+
+    <section *ngIf="errorMessage" class="error-banner">
+        {{ errorMessage }}
+    </section>
+
+    <section class="task-form">
+        <input type="text" [(ngModel)]="newTaskTitle" placeholder="Enter a task title" (keyup.enter)="addTask()" required/>
+        <textarea [(ngModel)]="newTaskDescription" placeholder="Enter a task description"></textarea>
+        <button (click)="addTask()">Add Task</button>
+    </section>
+
+    <section class="task-list-section">
+        <h3>Tasks</h3>
+
+        <div *ngIf="isLoading" class="loading-message">
+            <p>Loading tasks... (The server on Render may take a few seconds to wake up) ⏳</p>
+        </div>
+
+        <ul class="task-list" *ngIf="!isLoading">
+            <li *ngFor="let task of tasks" [class.completed]="task.status === 1">
+                <div class="task-info">
+                    <span class="task-title">{{ task.title }}</span>
+                    <span class="task-description">{{ task.description }}</span>
+                    <span class="task-status">{{ task.status === 1 ? 'Completed' : 'Pending' }}</span>
+                </div>
+            </li>
+        </ul>
+
+        <div class="no-tasks-message" *ngIf="!isLoading && tasks.length === 0">
+            No tasks found. Fill the form above to add a new task.
+        </div>
+    </section>
+</div>
