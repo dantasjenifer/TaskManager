@@ -16,4 +16,4 @@ COPY --from=build /app/publish .
 
 ENV ASPNETCORE_URLS=http://+:$PORT
 
-ENTRYPOINT ["dotnet", "TaskManager.Api.dll"]
+ENTRYPOINT ["sh", "-c", "dotnet TaskManager.Api.dll --urls=http://*:${PORT:-8080}"]
