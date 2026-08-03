@@ -9,12 +9,19 @@ import { vi } from 'vitest';
 describe('TaskList', () => {
   let component: TaskList;
   let fixture: ComponentFixture<TaskList>;
-  let taskServiceSpy: { getTasks: ReturnType<typeof vi.fn>; createTask: ReturnType<typeof vi.fn> };
+  let taskServiceSpy: { 
+    getTasks: ReturnType<typeof vi.fn>; 
+    createTask: ReturnType<typeof vi.fn>;
+    updateTask: ReturnType<typeof vi.fn>;
+    deleteTask: ReturnType<typeof vi.fn>;
+  };
 
   beforeEach(async () => {
     const spy = {
       getTasks: vi.fn(),
-      createTask: vi.fn()
+      createTask: vi.fn(),
+      updateTask: vi.fn(),
+      deleteTask: vi.fn()
     };
 
     await TestBed.configureTestingModule({
@@ -24,7 +31,7 @@ describe('TaskList', () => {
       ]
     }).compileComponents();
 
-    taskServiceSpy = TestBed.inject(TaskService) as unknown as { getTasks: ReturnType<typeof vi.fn>; createTask: ReturnType<typeof vi.fn> };
+    taskServiceSpy = TestBed.inject(TaskService) as unknown as typeof spy;
   });
 
   it('should create', async () => {
@@ -81,5 +88,38 @@ describe('TaskList', () => {
     expect(component.tasks.length).toBe(1);
     expect(component.tasks[0].title).toBe('Brand New Task');
     expect(component.newTaskTitle).toBe('');
+  });
+
+  it('should complete/update task status successfully', async () => {
+    const mockTasks: TaskItem[] = [
+      { id: 'guid-1', title: 'Task to Complete'}
+    ];
+    taskServiceSpy.getTasks.mockReturnValue(of(mockTasks));
+    taskServiceSpy.completeTask.mockReturnValue(of(void 0));
+
+    fixture = TestBed.createComponent(TaskList);
+    component = fixture.componentInstance;
+    await fixture.whenStable();
+
+    // Se o seu método no componente se chamar completeTask ou updateTask, ajuste aqui:
+    component.completeTask(mockTasks[0]);
+
+    expect(taskServiceSpy.completeTask).toHaveBeenCalledWith('guid-1');
+  });
+
+  it('should delete a task successfully', async () => {
+    const mockTasks: TaskItem[] = [
+      { id: 'guid-1', title: 'Task to Delete'}
+    ];
+    taskServiceSpy.getTasks.mockReturnValue(of(mockTasks));
+    taskServiceSpy.deleteTask.mockReturnValue(of(void 0));
+
+    fixture = TestBed.createComponent(TaskList);
+    component = fixture.componentInstance;
+    await fixture.whenStable();
+
+    component.deleteTask('guid-1');
+
+    expect(taskServiceSpy.deleteTask).toHaveBeenCalledWith('guid-1');
   });
 });

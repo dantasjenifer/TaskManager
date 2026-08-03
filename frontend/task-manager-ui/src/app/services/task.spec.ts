@@ -57,4 +57,28 @@ describe('TaskService', () => {
     expect(req.request.body).toEqual(newTask);
     req.flush(createdTask);
   });
+
+  it('should update task status to complete via PUT', () => {
+    const taskId = '1-guid';
+
+    service.completeTask(taskId).subscribe(response => {
+      expect(response).toBeTruthy();
+    });
+
+    const req = httpMock.expectOne(`http://localhost:5098/api/tasks/${taskId}`);
+    expect(req.request.method).toBe('PUT');
+    req.flush(null);
+  });
+
+  it('should delete a task via DELETE', () => {
+    const taskId = '1-guid';
+
+    service.deleteTask(taskId).subscribe(response => {
+      expect(response).toBeTruthy();
+    });
+
+    const req = httpMock.expectOne(`http://localhost:5098/api/tasks/${taskId}`);
+    expect(req.request.method).toBe('DELETE');
+    req.flush(null);
+  });
 });
