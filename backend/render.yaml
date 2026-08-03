@@ -12,7 +12,7 @@ services:
         fromDatabase:
           name: taskmanager-db
           property: connectionString
-  - type: postgres
+  - type: psql
     name: taskmanager-db
     plan: free
     databaseName: taskmanager
