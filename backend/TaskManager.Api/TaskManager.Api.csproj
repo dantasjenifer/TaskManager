@@ -4,8 +4,10 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <DocumentationFile>bin\Debug\net8.0\TaskManager.Api.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\net8.0\TaskManager.Api.xml</DocumentationFile>
+    <PreserveCompilationContext>true</PreserveCompilationContext>
     <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
@@ -15,5 +17,9 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.*" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
+
+  <Target Name="CopyCustomDocumentation" AfterTargets="Publish">
+    <Copy SourceFiles="bin\Release\net8.0\TaskManager.Api.xml" DestinationFolder="$(PublishDir)" Condition="Exists('bin\Release\net8.0\TaskManager.Api.xml')" />
+  </Target>
 
 </Project>
