@@ -12,7 +12,7 @@ describe('TaskList', () => {
   let taskServiceSpy: { 
     getTasks: ReturnType<typeof vi.fn>; 
     createTask: ReturnType<typeof vi.fn>;
-    updateTask: ReturnType<typeof vi.fn>;
+    completeTask: ReturnType<typeof vi.fn>;
     deleteTask: ReturnType<typeof vi.fn>;
   };
 
@@ -20,7 +20,7 @@ describe('TaskList', () => {
     const spy = {
       getTasks: vi.fn(),
       createTask: vi.fn(),
-      updateTask: vi.fn(),
+      completeTask: vi.fn(),
       deleteTask: vi.fn()
     };
 
@@ -102,7 +102,7 @@ describe('TaskList', () => {
     await fixture.whenStable();
 
     // Se o seu método no componente se chamar completeTask ou updateTask, ajuste aqui:
-    component.completeTask(mockTasks[0]);
+    component.completeTask(mockTasks[0].id!);
 
     expect(taskServiceSpy.completeTask).toHaveBeenCalledWith('guid-1');
   });

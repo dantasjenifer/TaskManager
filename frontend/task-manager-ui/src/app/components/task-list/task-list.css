@@ -100,6 +100,9 @@ h3 {
   border-radius: 6px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
   transition: transform 0.15s, box-shadow 0.15s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .task-list li:hover {
@@ -113,6 +116,11 @@ h3 {
 }
 
 .task-list li.completed .task-title {
+  text-decoration: line-through;
+  color: #9ca3af;
+}
+
+.task-list li.completed .task-description {
   text-decoration: line-through;
   color: #9ca3af;
 }
@@ -156,4 +164,42 @@ h3 {
   color: #9ca3af;
   font-style: italic;
   padding: 20px;
+}
+
+.task-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: 16px;
+}
+
+.task-actions button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  font-size: 0.85rem;
+}
+
+.task-actions button:active {
+  transform: scale(0.95);
+}
+
+.task-actions button:first-child {
+  background-color: #a78bfa;
+  color: white;
+}
+
+.task-actions button:first-child:hover {
+  background-color: #8b5cf6;
+}
+
+.task-actions button:last-child {
+  background-color: #f87171;
+  color: white;
+}
+
+.task-actions button:last-child:hover {
+  background-color: #ef4444;
 }

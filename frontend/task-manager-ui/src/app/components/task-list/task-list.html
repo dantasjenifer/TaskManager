@@ -25,6 +25,11 @@
                     <span class="task-description">{{ task.description }}</span>
                     <span class="task-status">{{ task.status === 1 ? 'Completed' : 'Pending' }}</span>
                 </div>
+
+                <div class="task-actions">
+                    <button *ngIf="task.status === 0" (click)="completeTask(task.id!)">Complete</button>
+                    <button (click)="deleteTask(task.id!)">Delete</button>
+                </div>
             </li>
         </ul>
 

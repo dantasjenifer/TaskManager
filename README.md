@@ -8,4 +8,6 @@ Technical assessment: A full-stack task management system using Angular, ASP.NET
 - Vulnerability checks and fixes
 - Automated tests implementation
 - Fix build and run errors
+- CSS styling
+- UI improvements
 - Render deployment configuration

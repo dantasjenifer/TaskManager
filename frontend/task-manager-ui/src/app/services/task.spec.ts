@@ -18,6 +18,8 @@ describe('TaskService', () => {
     });
     service = TestBed.inject(TaskService);
     httpMock = TestBed.inject(HttpTestingController);
+    // Override apiUrl for testing
+    (service as any).apiUrl = 'http://localhost:5098/api/tasks';
   });
 
   afterEach(() => {
@@ -58,15 +60,15 @@ describe('TaskService', () => {
     req.flush(createdTask);
   });
 
-  it('should update task status to complete via PUT', () => {
+  it('should update task status to complete via PATCH', () => {
     const taskId = '1-guid';
 
     service.completeTask(taskId).subscribe(response => {
-      expect(response).toBeTruthy();
+      expect(response).toBeNull();
     });
 
-    const req = httpMock.expectOne(`http://localhost:5098/api/tasks/${taskId}`);
-    expect(req.request.method).toBe('PUT');
+    const req = httpMock.expectOne(`http://localhost:5098/api/tasks/${taskId}/complete`);
+    expect(req.request.method).toBe('PATCH');
     req.flush(null);
   });
 
@@ -74,7 +76,7 @@ describe('TaskService', () => {
     const taskId = '1-guid';
 
     service.deleteTask(taskId).subscribe(response => {
-      expect(response).toBeTruthy();
+      expect(response).toBeNull();
     });
 
     const req = httpMock.expectOne(`http://localhost:5098/api/tasks/${taskId}`);
