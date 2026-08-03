@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using TaskManager.Api.Controllers;
 using TaskManager.Api.Data;
 using TaskManager.Api.Models;
+using TaskManager.Api.Services;
 using Xunit;
 using TaskStatus = TaskManager.Api.Models.TaskStatus;
 
@@ -28,7 +29,9 @@ namespace TaskManager.Tests
             context.Tasks.Add(new TaskItem { Title = "Task 1" });
             context.Tasks.Add(new TaskItem { Title = "Task 2" });
             await context.SaveChangesAsync();
-            var controller = new TasksController(context);
+            
+            var taskService = new TaskService(context);
+            var controller = new TasksController(taskService);
 
             // Act
             var result = await controller.GetTasks();
@@ -45,7 +48,8 @@ namespace TaskManager.Tests
         {
             // Arrange
             var context = GetInMemoryDbContext();
-            var controller = new TasksController(context);
+            var taskService = new TaskService(context);
+            var controller = new TasksController(taskService);
             var newTask = new TaskItem { Title = "Study TDD", Description = "Review unit tests" };
 
             // Act
@@ -63,7 +67,12 @@ namespace TaskManager.Tests
         {
             // Arrange
             var context = GetInMemoryDbContext();
-            var controller = new TasksController(context);
+            var taskService = new TaskService(context);
+            var controller = new TasksController(taskService);
+            
+            // Simula o erro de validação que o [ApiController] faria automaticamente
+            controller.ModelState.AddModelError("Title", "The Title field is required.");
+            
             var invalidTask = new TaskItem { Title = "", Description = "No title test" };
 
             // Act
@@ -82,7 +91,9 @@ namespace TaskManager.Tests
             var task = new TaskItem { Title = "Task to complete" };
             context.Tasks.Add(task);
             await context.SaveChangesAsync();
-            var controller = new TasksController(context);
+            
+            var taskService = new TaskService(context);
+            var controller = new TasksController(taskService);
 
             // Act
             var result = await controller.CompleteTask(task.Id);
@@ -101,7 +112,9 @@ namespace TaskManager.Tests
             var task = new TaskItem { Title = "Already completed task", Status = TaskStatus.Completed };
             context.Tasks.Add(task);
             await context.SaveChangesAsync();
-            var controller = new TasksController(context);
+            
+            var taskService = new TaskService(context);
+            var controller = new TasksController(taskService);
 
             // Act
             var result = await controller.CompleteTask(task.Id);
@@ -116,7 +129,8 @@ namespace TaskManager.Tests
         {
             // Arrange
             var context = GetInMemoryDbContext();
-            var controller = new TasksController(context);
+            var taskService = new TaskService(context);
+            var controller = new TasksController(taskService);
 
             // Act
             var result = await controller.CompleteTask(Guid.NewGuid());
@@ -134,7 +148,9 @@ namespace TaskManager.Tests
             var task = new TaskItem { Title = "Task to delete" };
             context.Tasks.Add(task);
             await context.SaveChangesAsync();
-            var controller = new TasksController(context);
+            
+            var taskService = new TaskService(context);
+            var controller = new TasksController(taskService);
 
             // Act
             var result = await controller.DeleteTask(task.Id);
@@ -149,7 +165,8 @@ namespace TaskManager.Tests
         {
             // Arrange
             var context = GetInMemoryDbContext();
-            var controller = new TasksController(context);
+            var taskService = new TaskService(context);
+            var controller = new TasksController(taskService);
 
             // Act
             var result = await controller.DeleteTask(Guid.NewGuid());
