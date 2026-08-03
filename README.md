@@ -11,3 +11,4 @@ Technical assessment: A full-stack task management system using Angular, ASP.NET
 - CSS styling
 - UI improvements
 - Render deployment configuration
+- Swagger documentation
