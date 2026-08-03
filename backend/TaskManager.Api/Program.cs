@@ -5,15 +5,10 @@ using TaskManager.Api.Data;
 using TaskManager.Api.Services;
 using TaskManager.Api.Services.Interfaces;
 
-var builderOptions = new HostApplicationBuilderSettings
-{
-    Args = args,
-    ContentRootPath = AppContext.BaseDirectory
-};
+var builder = WebApplication.CreateBuilder(args);
 
-var builder = Host.CreateApplicationBuilder(builderOptions);
-
-builder.Services.AddControllers();
+builder.Configuration.Sources.Clear();
+builder.Configuration.AddEnvironmentVariables();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
                        ?? Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection");
@@ -30,6 +25,7 @@ else
 }
 
 builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddControllers();
 
 builder.Services.AddCors(optionsCors =>
 {
