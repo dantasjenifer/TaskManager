@@ -3,5 +3,7 @@ Technical assessment: A full-stack task management system using Angular, ASP.NET
 
 ## IA Usage
 
-- Inital commands for project creation
+- Application developed using Windsurf IDE 
+- Initial commands for project creation
 - Vulnerability checks and fixes
+- Automated tests implementation
