@@ -49,21 +49,26 @@ builder.Services.AddSwaggerGen(options =>
     {
         Title = "TaskManager API",
         Version = "v1",
-        Description = "API de gerenciamento de tarefas desenvolvida para o projeto.",
+        Description = "Task management API developed for the project.",
         Contact = new OpenApiContact
         {
             Name = "Jenifer"
         }
     });
 
-    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    if (File.Exists(xmlPath))
+    try
     {
-        options.IncludeXmlComments(xmlPath);
+        var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+        if (File.Exists(xmlPath))
+        {
+            options.IncludeXmlComments(xmlPath);
+        }
+    }
+    catch
+    {
     }
 });
-
 var app = builder.Build();
 
 app.UseSwagger();
