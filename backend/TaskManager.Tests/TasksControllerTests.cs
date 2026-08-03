@@ -37,8 +37,8 @@ namespace TaskManager.Tests
             var result = await controller.GetTasks();
 
             // Assert
-            var actionResult = Assert.IsType<ActionResult<IEnumerable<TaskItem>>>(result);
-            var tasks = Assert.IsAssignableFrom<IEnumerable<TaskItem>>(actionResult.Value);
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            var tasks = Assert.IsAssignableFrom<IEnumerable<TaskItem>>(okResult.Value);
             Assert.Equal(2, tasks.Count());
         }
 
@@ -70,16 +70,15 @@ namespace TaskManager.Tests
             var taskService = new TaskService(context);
             var controller = new TasksController(taskService);
             
-            // Simula o erro de validação que o [ApiController] faria automaticamente
-            controller.ModelState.AddModelError("Title", "The Title field is required.");
-            
             var invalidTask = new TaskItem { Title = "", Description = "No title test" };
 
             // Act
             var result = await controller.CreateTask(invalidTask);
 
             // Assert
-            Assert.IsType<BadRequestObjectResult>(result.Result);
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+            
+            Assert.Contains("Title is required", badRequestResult.Value?.ToString());
         }
 
         // --- COMPLETE TASK (PATCH) ---
@@ -121,7 +120,7 @@ namespace TaskManager.Tests
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Task is already completed.", badRequestResult.Value);
+            Assert.Equal("Task is already completed", badRequestResult.Value);
         }
 
         [Fact]
