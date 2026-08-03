@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System;
 
 namespace TaskManager.Api.Models 
 {
@@ -10,7 +11,7 @@ namespace TaskManager.Api.Models
     
     public class TaskItem
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         [Required]
         [MaxLength(100)]
         public string Title { get; set; } = string.Empty;
