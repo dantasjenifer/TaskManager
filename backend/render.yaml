@@ -12,8 +12,9 @@ services:
         fromDatabase:
           name: taskmanager-db
           property: connectionString
-  - type: psql
-    name: taskmanager-db
+
+databases:
+  - name: taskmanager-db
     plan: free
     databaseName: taskmanager
     user: taskmanager_user
