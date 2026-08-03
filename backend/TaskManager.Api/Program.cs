@@ -43,6 +43,9 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddEndpointsApiExplorer();
 
+builder.Services.AddEndpointsApiExplorer();
+
+// Simplifique temporariamente para isolar a causa
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
@@ -55,20 +58,8 @@ builder.Services.AddSwaggerGen(options =>
             Name = "Jenifer"
         }
     });
-
-    try
-    {
-        var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-        if (File.Exists(xmlPath))
-        {
-            options.IncludeXmlComments(xmlPath);
-        }
-    }
-    catch
-    {
-    }
 });
+
 var app = builder.Build();
 
 app.UseSwagger();
