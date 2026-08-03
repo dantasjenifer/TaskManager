@@ -5,26 +5,35 @@ using TaskManager.Api.Data;
 using TaskManager.Api.Services;
 using TaskManager.Api.Services.Interfaces;
 
-var builder = WebApplication.CreateBuilder(args);
+var builderOptions = new HostApplicationBuilderSettings
+{
+    Args = args,
+    ContentRootPath = AppContext.BaseDirectory
+};
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var builder = Host.CreateApplicationBuilder(builderOptions);
+
+builder.Services.AddControllers();
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+                       ?? Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection");
+
 if (string.IsNullOrEmpty(connectionString))
 {
-    builder.Services.AddDbContext<TaskContext>(options =>
-        options.UseInMemoryDatabase("TaskManagerDB"));
+    builder.Services.AddDbContext<TaskContext>(optionsDb =>
+        optionsDb.UseInMemoryDatabase("TaskManagerDB"));
 }
 else
 {
-    builder.Services.AddDbContext<TaskContext>(options =>
-        options.UseNpgsql(connectionString));
+    builder.Services.AddDbContext<TaskContext>(optionsDb =>
+        optionsDb.UseNpgsql(connectionString));
 }
 
 builder.Services.AddScoped<ITaskService, TaskService>();
-builder.Services.AddControllers();
 
-builder.Services.AddCors(options =>
+builder.Services.AddCors(optionsCors =>
 {
-    options.AddPolicy("AllowAngular", policy =>
+    optionsCors.AddPolicy("AllowAngular", policy =>
     {
         policy.WithOrigins(
                 "http://localhost:4200",
@@ -36,9 +45,9 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddSwaggerGen(options =>
+builder.Services.AddSwaggerGen(swaggerOptions =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo
+    swaggerOptions.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = "TaskManager API",
         Version = "v1",
@@ -56,7 +65,7 @@ builder.Services.AddSwaggerGen(options =>
         
         if (File.Exists(xmlPath))
         {
-            options.IncludeXmlComments(xmlPath);
+            swaggerOptions.IncludeXmlComments(xmlPath);
         }
     }
     catch (Exception ex)
@@ -68,10 +77,10 @@ builder.Services.AddSwaggerGen(options =>
 var app = builder.Build();
 
 app.UseSwagger();
-app.UseSwaggerUI(options =>
+app.UseSwaggerUI(uiOptions =>
 {
-    options.SwaggerEndpoint("/swagger/v1/swagger.json", "TaskManager API v1");
-    options.RoutePrefix = string.Empty;
+    uiOptions.SwaggerEndpoint("/swagger/v1/swagger.json", "TaskManager API v1");
+    uiOptions.RoutePrefix = string.Empty;
 });
 
 app.UseCors("AllowAngular");
