@@ -5,6 +5,12 @@ using TaskManager.Api.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.Sources.Clear();
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: false)
+    .AddEnvironmentVariables();
+
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 if (string.IsNullOrEmpty(connectionString))
 {
@@ -50,5 +56,3 @@ app.UseHttpsRedirection();
 app.MapControllers();
 
 app.Run();
-
-
