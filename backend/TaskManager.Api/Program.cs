@@ -5,9 +5,14 @@ using TaskManager.Api.Data;
 using TaskManager.Api.Services;
 using TaskManager.Api.Services.Interfaces;
 
-var builder = WebApplication.CreateBuilder(args);
+var options = new WebApplicationOptions
+{
+    Args = args,
+    EnvironmentName = Environments.Production
+};
 
-builder.Configuration.Sources.Clear();
+var builder = WebApplication.CreateBuilder(options);
+
 builder.Configuration.AddEnvironmentVariables();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
