@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: taskmanager-api
+    runtime: dotnet
+    plan: free
+    buildCommand: dotnet build -c Release TaskManager.Api/TaskManager.Api.csproj
+    startCommand: dotnet run --project TaskManager.Api/TaskManager.Api.csproj --urls http://0.0.0.0:$PORT
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ConnectionStrings__DefaultConnection
+        fromDatabase:
+          name: taskmanager-db
+          property: connectionString
+  - type: postgres
+    name: taskmanager-db
+    plan: free
+    databaseName: taskmanager
+    user: taskmanager_user
